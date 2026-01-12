@@ -34,6 +34,7 @@
 #include "components/completions.h"
 #include "components/edits.h"
 #include "components/embeddings.h"
+#include "components/rerank.h"
 #include "components/files.h"
 #include "components/fine_tunes.h"
 #include "components/images.h"
@@ -51,6 +52,7 @@ namespace liboai {
 				Completion(std::make_unique<liboai::Completions>(root)),
 				Edit(std::make_unique<liboai::Edits>(root)),
 				Embedding(std::make_unique<liboai::Embeddings>(root)),
+				Rerank(std::make_unique<liboai::Rerank>(root)),
 				File(std::make_unique<liboai::Files>(root)),
 				FineTune(std::make_unique<liboai::FineTunes>(root)),
 				Image(std::make_unique<liboai::Images>(root)),
@@ -99,6 +101,12 @@ namespace liboai {
 					provides access to its OpenAI API endpoints.
 			*/
 			std::unique_ptr<liboai::Embeddings> Embedding;
+
+			/*
+				@brief A pointer to the Rerank component class that
+					provides access to its OpenAI API endpoints.
+			*/
+			std::unique_ptr<liboai::Rerank> Rerank;
 
 			/*
 				@brief A pointer to the Files component class that
