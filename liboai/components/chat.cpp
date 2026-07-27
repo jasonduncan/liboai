@@ -114,7 +114,7 @@ bool liboai::Conversation::PopSystemData() & noexcept(false) {
 }
 
 void liboai::Conversation::EraseExtra() {
-	if (_conversation["messages"].size() > _max_history_size) {
+	while (_conversation["messages"].size() > _max_history_size) {
 		// Ensure the system message is preserved
 		auto first_msg = _conversation["messages"].begin();
 		if (first_msg != _conversation["messages"].end() && (*first_msg)["role"].get<std::string>() == "system") {
