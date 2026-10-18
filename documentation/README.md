@@ -215,3 +215,6 @@ For detailed examples regarding individual component interfaces, refer to the ap
 
 <h3>Project Maintenance</h3>
 <p>Maintainers can find PR workflow notes in <a href="./maintenance">documentation/maintenance</a>.</p>
+
+<h3>Compatible Server Extensions</h3>
+<p>See <a href="./rerank">Rerank</a> for document ranking through compatible servers such as llama.cpp.</p>
