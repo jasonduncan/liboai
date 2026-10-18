@@ -15,3 +15,9 @@ target_link_libraries(rerank_test PRIVATE oai)
 add_test(NAME rerank_http COMMAND ${Python3_EXECUTABLE}
   ${CMAKE_CURRENT_SOURCE_DIR}/rerank/mock_server.py $<TARGET_FILE:rerank_test>)
 set_tests_properties(rerank_http PROPERTIES TIMEOUT 45)
+
+# These validate opt-in/receipts/cleanup with synthetic data, never live APIs.
+add_executable(live_support_test live/support_test.cpp)
+target_link_libraries(live_support_test PRIVATE oai)
+add_test(NAME live_support COMMAND live_support_test)
+add_test(NAME live_runner COMMAND ${Python3_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/live/test_runner.py)

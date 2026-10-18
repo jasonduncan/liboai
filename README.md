@@ -75,6 +75,8 @@ See [Responses lifecycle and streaming](documentation/responses/README.md), [req
 
 The [cross-platform CI workflow](.github/workflows/ci.yml) builds examples, runs offline tests, and checks installed and parent-project consumers. See [CI configurations and local reproduction](documentation/maintenance/CI.md).
 
+The [opt-in live regression suite](documentation/maintenance/LIVE_TESTS.md) preserves bounded synthetic API checks with explicit execution, sanitized receipts, and owned-resource cleanup. It is never run by default CTest or CI.
+
 <h1>Dependencies</h1>
 <p>For the library to work the way it does, it relies on two major dependencies. These dependencies can be found listed below.<p>
 

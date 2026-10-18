@@ -1,6 +1,6 @@
 # Continuous integration
 
-[The C++ CI workflow](../../.github/workflows/ci.yml) runs on pushes, pull requests and manual dispatch. Every job builds all current and historical examples, runs the three offline CTests, installs the library, and builds/runs both installed-package and parent-project consumers.
+[The C++ CI workflow](../../.github/workflows/ci.yml) runs on pushes, pull requests and manual dispatch. Every job builds all current and historical examples, compiles the opt-in live harnesses without running them, runs five offline CTests, installs the library, and builds/runs both installed-package and parent-project consumers. The two additional offline tests validate the [live runner and cleanup support](LIVE_TESTS.md) with synthetic data and mocked subprocesses.
 
 | Job | Configuration | What it adds |
 | --- | --- | --- |

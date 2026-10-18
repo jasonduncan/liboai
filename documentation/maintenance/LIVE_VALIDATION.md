@@ -2,7 +2,7 @@
 
 The user supplied `OPENAI_API_KEY` in the local `.env` and authorized testing the modernization and extensions. The key was loaded afresh into child-process environments, never placed in command arguments or receipts. `.env` and local variants are now ignored by Git. Authentication through the compiled C++ library returned HTTP 200.
 
-The normal and ASan/UBSan suites each passed all three CTests before the live checks. Existing example, installed-consumer and parent-consumer builds had already passed for this source state. No library implementation changed during these smoke tests; they exercised the current compiled library. The live harnesses and sanitized receipts are retained under the ignored `build/live-smoke/` directory.
+The normal and ASan/UBSan suites each passed all three CTests before the live checks. Existing example, installed-consumer and parent-consumer builds had already passed for this source state. No library implementation changed during these smoke tests; they exercised the current compiled library. The original live harnesses and sanitized receipts are retained under the ignored `build/live-smoke/` directory. A maintained [opt-in suite](LIVE_TESTS.md) now preserves these scenarios; this report remains evidence of the original run only.
 
 ## Results by API family
 
@@ -76,4 +76,4 @@ The ignored local harness directory contains `common.h`, a safe `.env` loader (`
 
 Initial subagent runs were blocked by their network sandbox before HTTP contact (cURL error 6, HTTP 0). They created no remote resources and are not counted as API failures. The actual requests were executed through the authorized local environment. No retries were added to production code.
 
-Linux/Windows builds, older cURL backends, Azure credentials/service access, live webhook delivery, every model/parameter combination and semantic model quality remain unqualified. Agents and ChatKit were not implemented or exercised.
+Linux/Windows builds were outside this live run and were subsequently qualified in [CI](CI.md). Older cURL backends, Azure credentials/service access, live webhook delivery, every model/parameter combination and semantic model quality remain unqualified. Agents and ChatKit were not implemented or exercised.
