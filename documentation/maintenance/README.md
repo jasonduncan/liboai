@@ -54,6 +54,7 @@ ctest --test-dir build --output-on-failure
 
 - [Decisions and Skills extension plan](./DECISIONS_SKILLS_PLAN.md)
 - [Decisions usage](../extensions/DECISIONS.md) and [Skills usage](../extensions/SKILLS.md)
+- [Cross-platform CI and local reproduction](./CI.md)
 - [Coverage and validation](./API_COVERAGE.md)
 - [Live validation results and limitations](./LIVE_VALIDATION.md)
 - [Request options and diagnostics](./REQUEST_OPTIONS.md)

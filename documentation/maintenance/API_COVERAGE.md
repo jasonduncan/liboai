@@ -52,7 +52,7 @@ A subsequent authorized [live validation run](LIVE_VALIDATION.md) used synthetic
 - AddressSanitizer + UndefinedBehaviorSanitizer build and all three CTests pass, including the optional OpenSSL webhook provider. Native CommonCrypto verification is covered by the regular build.
 - Install-and-consume build/run passed. Parent-project and vendored-target checks are recorded in [validation commands](VALIDATION.md).
 - All 20 measured existing class sizes/alignments match the implementation baseline on this toolchain. Existing public fields/signatures were retained. This is not a cross-toolchain ABI guarantee.
-- Linux and Windows runtime/build validation has not been performed in this session. cURL older than 7.56's legacy form path was not exercised. Do not claim cross-platform release qualification from these results.
+- The initial offline run covered macOS. Subsequent Linux, macOS and Windows CI results are recorded separately in [CI.md](CI.md). cURL older than 7.56's legacy form path remains unexercised; these results do not establish cross-toolchain ABI compatibility.
 - The initial implementation checks were offline. Subsequent live smoke results and remaining service/cleanup limitations are recorded in [LIVE_VALIDATION.md](LIVE_VALIDATION.md). No publishing, deployment, or hosted-tool quality evaluation was performed.
 
 A test fixture deliberately returns controlled responses; it proves client behavior and workflow wiring, not server semantics. Global authorization remains process-wide and must be configured before concurrent work. New independent resource clients own their async arguments; existing components retain their documented owner-lifetime requirement. See [request contracts](REQUEST_OPTIONS.md).

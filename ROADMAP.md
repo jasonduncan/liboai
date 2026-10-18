@@ -16,7 +16,7 @@ This is a living backlog of improvements and ideas as we deepen our use of the l
 
 ## Now
 
-- Cross-platform build/runtime qualification on Linux and Windows
+- Run and maintain the [cross-platform CI matrix](documentation/maintenance/CI.md); qualify Linux/Windows against actual successful runs
 - Resolve remaining [live qualification gaps](documentation/maintenance/LIVE_VALIDATION.md), including resource visibility and externally hosted workflows
 - Review the [coverage inventory](documentation/maintenance/API_COVERAGE.md) before release claims
 

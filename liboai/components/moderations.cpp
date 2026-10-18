@@ -25,7 +25,7 @@ liboai::FutureResponse liboai::Moderations::create_async(const std::string& inpu
 }
 
 liboai::ApiResult liboai::Moderations::create_json(const nlohmann::json& body, const RequestOptions& options) const & {
-    return detail::request(this->openai_root_, "POST", "/moderations", body, {}, options);
+    return detail::request(this->openai_root_, "POST", "/moderations", std::optional<nlohmann::json>{std::in_place, body}, {}, options);
 }
 
 std::future<liboai::ApiResult> liboai::Moderations::create_json_async(const nlohmann::json& body, const RequestOptions& options) const & {

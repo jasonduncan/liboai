@@ -73,6 +73,8 @@ Running examples makes real API calls and may incur charges; model access is acc
 
 See [Responses lifecycle and streaming](documentation/responses/README.md), [request options and diagnostics](documentation/maintenance/REQUEST_OPTIONS.md), [modern component APIs](documentation/maintenance/MODERN_COMPONENTS.md), and [supporting resources](documentation/resources/resources.md). Existing signatures remain available. Retired Edits and FineTunes examples are [historical compatibility examples](documentation/maintenance/HISTORICAL_APIS.md).
 
+The [cross-platform CI workflow](.github/workflows/ci.yml) builds examples, runs offline tests, and checks installed and parent-project consumers. See [CI configurations and local reproduction](documentation/maintenance/CI.md).
+
 <h1>Dependencies</h1>
 <p>For the library to work the way it does, it relies on two major dependencies. These dependencies can be found listed below.<p>
 

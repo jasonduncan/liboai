@@ -109,7 +109,7 @@ liboai::FutureResponse liboai::Images::create_variation_async(const std::filesys
 }
 
 liboai::ApiResult liboai::Images::create_json(const nlohmann::json& body, const RequestOptions& options) const & {
-    return detail::request(this->openai_root_, "POST", "/images/generations", body, {}, options);
+    return detail::request(this->openai_root_, "POST", "/images/generations", std::optional<nlohmann::json>{std::in_place, body}, {}, options);
 }
 
 std::future<liboai::ApiResult> liboai::Images::create_json_async(const nlohmann::json& body, const RequestOptions& options) const & {

@@ -1,6 +1,6 @@
 # Modernization validation record
 
-Initial offline validation on October 17, 2026 used no real API credentials or billable requests. A later user-authorized [live validation run](LIVE_VALIDATION.md) is recorded separately. The source checkout was at `3707248dd6a95a93e559968e6bf7633ef6adbbe9`; implementation remains a working-tree change.
+Initial offline validation on October 17, 2026 used no real API credentials or billable requests. A later user-authorized [live validation run](LIVE_VALIDATION.md) is recorded separately. Implementation started from `3707248dd6a95a93e559968e6bf7633ef6adbbe9` and was subsequently committed and pushed as `541b6b1b89985f68a7187d9c8aed1b8621d02397`.
 
 ## Core and examples
 
@@ -56,7 +56,7 @@ build/api-modern-consumer-vendored/consumer
 
 All three consumer configurations build and run. The vendored check builds nlohmann-json from its existing local source and supplies an unnamespaced `libcurl` interface target backed by system cURL, exercising liboai's alias fallback. It does not rebuild vendored cURL from source. These small consumers never send network requests.
 
-`git diff --check` passes. Linux/Windows builds, older cURL form APIs, shared-library ABI compatibility across toolchains, live model/service access, and deployment were not validated. These remain release-qualification boundaries, not evidence implied by the local passes.
+`git diff --check` passes. The initial offline run did not validate Linux/Windows builds, older cURL form APIs, shared-library ABI compatibility across toolchains, live model/service access, or deployment. Subsequent live and CI results are recorded separately below; the local passes alone do not establish those properties.
 
 
 ## Decisions, Skills and feature comparison
@@ -65,8 +65,12 @@ The same normal build (including both new examples), ASan/UBSan build, install-a
 
 Extension fixtures cover every sync/async endpoint, raw/unknown fields, Decisions variants and malformed typed answers, async client/options/buffer snapshots, skill/version pagination, encoded identifiers, binary ZIP downloads, and structured errors. The Skills workflow checks a version-pinned hosted-shell request independently of the mutable default pointer. These requests use synthetic loopback data only.
 
-The README now contains the major-family feature matrix, linked to `API_COVERAGE.md`; local documentation links and `git diff --check` pass. Decisions and Skills have their own usage documents, compiled examples, and implementation plan. Agents remains excluded; ChatKit remains deferred. Live-service and cross-platform qualification limits above still apply.
+The README now contains the major-family feature matrix, linked to `API_COVERAGE.md`; local documentation links and `git diff --check` pass. Decisions and Skills have their own usage documents, compiled examples, and implementation plan. Agents remains excluded; ChatKit remains deferred. These initial extension checks were local and offline.
 
 ## Subsequent live validation
 
 The normal and ASan/UBSan three-test suites were rerun and passed before the live run. See [the live validation report](LIVE_VALIDATION.md) for synthetic service checks, observed visibility delays, purpose restrictions, and cleanup status. Live results do not replace the broader offline edge-case coverage.
+
+## Subsequent cross-platform validation
+
+See [the CI record](CI.md) for the hosted compiler/configuration matrix, revision-specific results, reproduction commands, and remaining coverage limits. CI uses synthetic fixtures and does not perform live API requests.

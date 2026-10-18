@@ -837,7 +837,7 @@ namespace liboai {
 			std::optional<nlohmann::json> _functions = std::nullopt;
 			bool _last_resp_is_fc = false;
 			std::string _last_incomplete_buffer;
-			size_t _max_history_size = std::numeric_limits<size_t>::max();
+			size_t _max_history_size = (std::numeric_limits<size_t>::max)();
 	};
 
 	class ChatCompletion final : private Network {

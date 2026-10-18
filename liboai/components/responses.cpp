@@ -228,7 +228,7 @@ std::string response_path(const std::string& id) {
 
 liboai::ApiResult liboai::Responses::create_with_options(const nlohmann::json& request,
     const RequestOptions& options, std::optional<StreamCallback> stream) const & {
-    return detail::request(openai_root_, "POST", "/responses", request, {}, options, stream);
+    return detail::request(openai_root_, "POST", "/responses", std::optional<nlohmann::json>{std::in_place, request}, {}, options, stream);
 }
 liboai::FutureApiResult liboai::Responses::create_with_options_async(const nlohmann::json& request,
     const RequestOptions& options, std::optional<StreamCallback> stream) const & {
@@ -254,7 +254,7 @@ liboai::FutureApiResult liboai::Responses::remove_async(const std::string& respo
 }
 liboai::ApiResult liboai::Responses::cancel(const std::string& response_id,
     const nlohmann::json& request, const RequestOptions& options) const & {
-    return detail::request(openai_root_, "POST", response_path(response_id) + "/cancel", request, {}, options);
+    return detail::request(openai_root_, "POST", response_path(response_id) + "/cancel", std::optional<nlohmann::json>{std::in_place, request}, {}, options);
 }
 liboai::FutureApiResult liboai::Responses::cancel_async(const std::string& response_id,
     const nlohmann::json& request, const RequestOptions& options) const & {
@@ -270,14 +270,14 @@ liboai::FutureApiResult liboai::Responses::list_input_items_async(const std::str
 }
 
 liboai::ApiResult liboai::Responses::count_input_tokens(const nlohmann::json& request, const RequestOptions& options) const & {
-    return detail::request(openai_root_, "POST", "/responses/input_tokens", request, {}, options);
+    return detail::request(openai_root_, "POST", "/responses/input_tokens", std::optional<nlohmann::json>{std::in_place, request}, {}, options);
 }
 liboai::FutureApiResult liboai::Responses::count_input_tokens_async(const nlohmann::json& request, const RequestOptions& options) const & {
     return std::async(std::launch::async, [this, request, options] { return count_input_tokens(request, options); });
 }
 
 liboai::ApiResult liboai::Responses::compact(const nlohmann::json& request, const RequestOptions& options) const & {
-    return detail::request(openai_root_, "POST", "/responses/compact", request, {}, options);
+    return detail::request(openai_root_, "POST", "/responses/compact", std::optional<nlohmann::json>{std::in_place, request}, {}, options);
 }
 liboai::FutureApiResult liboai::Responses::compact_async(const nlohmann::json& request, const RequestOptions& options) const & {
     return std::async(std::launch::async, [this, request, options] { return compact(request, options); });

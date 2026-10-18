@@ -35,7 +35,7 @@ DecisionChoiceValue choice_value(const json& value, const std::string& location)
 }
 std::int64_t level_value(const json& value, const std::string& location) {
     if (!value.is_number_integer() ||
-        (value.is_number_unsigned() && value.get<std::uint64_t>() > static_cast<std::uint64_t>(std::numeric_limits<std::int64_t>::max())))
+        (value.is_number_unsigned() && value.get<std::uint64_t>() > static_cast<std::uint64_t>((std::numeric_limits<std::int64_t>::max)())))
         malformed(location, "an int64 integer");
     return value.get<std::int64_t>();
 }
