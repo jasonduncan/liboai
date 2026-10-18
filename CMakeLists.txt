@@ -1,14 +1,18 @@
 cmake_minimum_required(VERSION 3.21)
 
-project(liboai)
+# Toolchains must be selected before project() initializes the compiler.
+# Retain the historical Windows vcpkg convenience for top-level consumers;
+# explicit toolchains and parent projects remain in control of their setup.
+if(CMAKE_SOURCE_DIR STREQUAL CMAKE_CURRENT_SOURCE_DIR AND NOT DEFINED CMAKE_TOOLCHAIN_FILE
+    AND NOT DEFINED ENV{CMAKE_TOOLCHAIN_FILE})
+  if(DEFINED VCPKG_CMAKE_PATH AND NOT VCPKG_CMAKE_PATH STREQUAL "")
+    set(CMAKE_TOOLCHAIN_FILE "${VCPKG_CMAKE_PATH}" CACHE FILEPATH "CMake toolchain")
+  elseif(CMAKE_HOST_WIN32 AND DEFINED ENV{VCPKG_ROOT} AND NOT "$ENV{VCPKG_ROOT}" STREQUAL "")
+    set(CMAKE_TOOLCHAIN_FILE "$ENV{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake" CACHE FILEPATH "CMake toolchain")
+  endif()
+endif()
 
-IF(WIN32)
-    set(VCPKG_CMAKE_PATH $ENV{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake CACHE FILEPATH "Location of vcpkg.cmake")
-    include(${VCPKG_CMAKE_PATH})
-    find_package(ZLIB REQUIRED)
-    find_package(nlohmann_json CONFIG REQUIRED)
-    find_package(CURL REQUIRED)
-ENDIF()
+project(liboai)
 
 option(BUILD_EXAMPLES "Build example applications" OFF)
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)

@@ -1,0 +1,114 @@
+name: C++ CI
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: cpp-ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: ${{ matrix.name }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: Linux GCC / default crypto
+            id: linux-gcc
+            os: ubuntu-24.04
+            openssl: 'OFF'
+            shared: 'OFF'
+            sanitizer: false
+          - name: Linux GCC / shared / OpenSSL
+            id: linux-shared-openssl
+            os: ubuntu-24.04
+            openssl: 'ON'
+            shared: 'ON'
+            sanitizer: false
+          - name: macOS AppleClang / CommonCrypto
+            id: macos-clang
+            os: macos-15
+            openssl: 'OFF'
+            shared: 'OFF'
+            sanitizer: false
+          - name: Windows MSVC / OpenSSL
+            id: windows-msvc
+            os: windows-2022
+            openssl: 'ON'
+            shared: 'OFF'
+            sanitizer: false
+          - name: Linux Clang / ASan + UBSan / OpenSSL
+            id: linux-sanitizers
+            os: ubuntu-24.04
+            openssl: 'ON'
+            shared: 'OFF'
+            sanitizer: true
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: '3.12'
+      - name: Install Linux dependencies
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y cmake ninja-build g++ clang libcurl4-openssl-dev nlohmann-json3-dev libssl-dev
+      - name: Install macOS dependencies
+        if: runner.os == 'macOS'
+        run: brew install nlohmann-json
+      - name: Check out pinned vcpkg
+        if: runner.os == 'Windows'
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          repository: microsoft/vcpkg
+          ref: bf19794383e8fb95eba5aa553235bc8ec2271688
+          path: build/ci-vcpkg
+          persist-credentials: false
+      - name: Install Windows dependencies
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          & ./build/ci-vcpkg/bootstrap-vcpkg.bat -disableMetrics
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          & ./build/ci-vcpkg/vcpkg.exe install 'curl[core,schannel]' nlohmann-json openssl --triplet x64-windows --disable-metrics
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          "CMAKE_TOOLCHAIN_FILE=$env:GITHUB_WORKSPACE/build/ci-vcpkg/scripts/buildsystems/vcpkg.cmake" >> $env:GITHUB_ENV
+          'VCPKG_TARGET_TRIPLET=x64-windows' >> $env:GITHUB_ENV
+      - name: Build, test and consume
+        shell: bash
+        env:
+          CI_OPENSSL: ${{ matrix.openssl }}
+          CI_SHARED: ${{ matrix.shared }}
+          CI_SANITIZER: ${{ matrix.sanitizer }}
+        run: |
+          args=(--build-dir build/ci --openssl "$CI_OPENSSL" --shared "$CI_SHARED")
+          if [[ "$RUNNER_OS" == Linux ]]; then
+            # Avoid unrelated static cURL installations on the hosted image.
+            args+=(--cmake-arg=-DCURL_LIBRARY=/usr/lib/x86_64-linux-gnu/libcurl.so)
+          fi
+          if [[ "$CI_SANITIZER" == true ]]; then
+            export CC=clang CXX=clang++
+            args+=(--config Debug --sanitizers)
+          fi
+          python tests/ci/run.py "${args[@]}"
+      - name: Retain test and configuration diagnostics
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: ci-${{ matrix.id }}
+          retention-days: 14
+          if-no-files-found: ignore
+          path: |
+            build/ci/**/results.xml
+            build/ci/**/Testing/Temporary/LastTest.log
+            build/ci/**/CMakeFiles/CMakeConfigureLog.yaml

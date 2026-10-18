@@ -75,7 +75,7 @@ void test_decisions(const std::string& root) {
         rejects_answer([&] { parse_decision_answers(malformed); });
     }
     auto malformed_score = result.response.raw_json;
-    malformed_score["answers"][2]["probabilities"][0]["value"] = std::numeric_limits<std::uint64_t>::max();
+    malformed_score["answers"][2]["probabilities"][0]["value"] = (std::numeric_limits<std::uint64_t>::max)();
     rejects_answer([&] { parse_decision_answers(malformed_score); });
     require_decision(parse_decision_answers({{"answers", json::array()}}).empty(), "Empty answers preserved");
     try {

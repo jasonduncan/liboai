@@ -48,7 +48,7 @@ void test_responses(const std::string& root) {
     require(streaming.at("stream") == false);
     require(stream.status == liboai::StreamStatus::completed && stream.terminal_response->at("status") == "completed");
     require(events.size() == 5 && events[1].json.at("item").at("type") == "function_call");
-    require(events[2].text_delta() == "snowman ☃" && events[3].json.at("unknown").at("keep") == true);
+    require(events[2].text_delta() == "snowman \xE2\x98\x83" && events[3].json.at("unknown").at("keep") == true);
     require(stream.result.request_id() == "req_stream");
     // The options/raw path leaves stream selection under caller control.
     std::string raw_body;

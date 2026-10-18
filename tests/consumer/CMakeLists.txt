@@ -30,3 +30,6 @@ else()
 endif()
 add_executable(consumer main.cpp)
 target_link_libraries(consumer PRIVATE ${oai_target})
+
+enable_testing()
+add_test(NAME consumer COMMAND consumer)
