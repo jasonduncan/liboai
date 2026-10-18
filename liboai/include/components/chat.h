@@ -813,7 +813,9 @@ namespace liboai {
 			 * @brief Sets the maximum history size for the conversation.
 			 * 
 			 * @param size The maximum number of messages allowed in the conversation history.
-			 *             Older messages will be removed when the limit is exceeded.
+			 *             Includes the leading system message, which is always retained,
+			 *             even at zero. AddUserData() and Update() remove older messages
+			 *             after appending; this setter does not trim existing history.
 			 */
 			void SetMaxHistorySize(size_t size) noexcept { _max_history_size = size; }
 

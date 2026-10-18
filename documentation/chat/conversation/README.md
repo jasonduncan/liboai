@@ -348,6 +348,16 @@ bool Update(const Response& response) & noexcept(false);
 std::string Export() const & noexcept(false);	
 ```
 
+<h3>Limit Conversation History</h3>
+<p><code>SetMaxHistorySize(size)</code> sets the total number of retained messages, including a leading system message. After <code>AddUserData()</code> or a successful message append in <code>Update()</code>, the oldest messages are removed until the limit is met. The leading system message is always preserved: at a limit of zero, it is the only message retained; without one, the history becomes empty. A limit of one with a leading system message likewise retains only the system message.</p>
+<p>The setter and <code>Import()</code> do not immediately trim existing history. The next non-streaming append applies the limit to the entire history, including imported messages. Streaming through <code>AppendStreamData()</code> is unchanged and does not enforce this limit. The default limit is effectively unlimited.</p>
+
+```cpp
+convo.SetMaxHistorySize(3);
+// After this append, retain at most three messages, including the system message.
+bool added = convo.AddUserData("Next question");
+```
+
 <h3>Import Conversation</h3>
 <p>Imports a conversation from a JSON string. This method imports a conversation from a JSON string. The JSON string should be the JSON string returned from a call to <code>Export()</code>. Returns a boolean indicating success.</p>
 
