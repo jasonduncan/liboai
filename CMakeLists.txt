@@ -20,3 +20,9 @@ if(BUILD_EXAMPLES)
 endif()
 
 set_property(DIRECTORY PROPERTY VS_STARTUP_PROJECT oai)
+
+option(LIBOAI_BUILD_TESTS "Build liboai regression tests" OFF)
+if(LIBOAI_BUILD_TESTS)
+  enable_testing()
+  add_subdirectory(tests)
+endif()

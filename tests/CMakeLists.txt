@@ -1,0 +1,3 @@
+add_executable(conversation_history_test conversation_history.cpp)
+target_link_libraries(conversation_history_test PRIVATE oai)
+add_test(NAME conversation_history COMMAND conversation_history_test)

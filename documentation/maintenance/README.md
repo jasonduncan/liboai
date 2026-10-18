@@ -22,6 +22,14 @@ gh pr checkout 1 --repo jasonduncan/liboai
 <pre><code>gh pr list --repo D7EAD/liboai
 </code></pre>
 
+<h3>Regression tests</h3>
+<p>Regression tests are opt-in and use the same cURL and nlohmann-json dependencies as the library. No API key or external service is needed.</p>
+<pre><code>cmake -S . -B build -DLIBOAI_BUILD_TESTS=ON
+cmake --build build
+ctest --test-dir build --output-on-failure
+</code></pre>
+<p>For memory-safety checks with Clang or GCC, configure a Debug build with <code>-DCMAKE_CXX_FLAGS="-fsanitize=address,undefined -fno-omit-frame-pointer"</code>.</p>
+
 <h3>Remotes</h3>
 <pre><code>git remote -v
 </code></pre>
