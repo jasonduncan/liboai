@@ -80,7 +80,7 @@ jobs:
         run: |
           & ./build/ci-vcpkg/bootstrap-vcpkg.bat -disableMetrics
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-          & ./build/ci-vcpkg/vcpkg.exe install 'curl[core,schannel]' nlohmann-json openssl --triplet x64-windows --disable-metrics
+          & ./build/ci-vcpkg/vcpkg.exe install 'curl[core,ssl]' nlohmann-json openssl --triplet x64-windows --disable-metrics
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           "CMAKE_TOOLCHAIN_FILE=$env:GITHUB_WORKSPACE/build/ci-vcpkg/scripts/buildsystems/vcpkg.cmake" >> $env:GITHUB_ENV
           'VCPKG_TARGET_TRIPLET=x64-windows' >> $env:GITHUB_ENV

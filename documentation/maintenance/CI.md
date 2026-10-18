@@ -12,6 +12,8 @@
 
 Windows uses a pinned vcpkg checkout and its `x64-windows` dependencies; vcpkg copies dependency DLLs beside test/consumer executables. Windows shared **liboai** builds are not covered: their existing export declarations need a separate compatibility review. Linux and macOS packages come from the runner's package managers. Compiler and dependency versions are visible in the run's configuration logs.
 
+The parent-project check supplies imported dependency targets. The separate unnamespaced vendored-target fallback is not part of this matrix.
+
 ## Local reproduction
 
 Install CMake 3.21+, a C++17 compiler, Python 3, cURL development files and nlohmann-json first. Install OpenSSL development files when selecting its provider. Then run:
