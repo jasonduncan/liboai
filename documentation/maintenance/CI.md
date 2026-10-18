@@ -35,3 +35,21 @@ Only synthetic loopback fixtures and consumers without network requests run in C
 Actions are pinned to full commit hashes, the workflow token has read-only repository access, and checkout credentials are not persisted. Each job retains only JUnit results, CTest logs and CMake configuration diagnostics for 14 days. The workflow does not upload `.env`, live-test receipts, source trees or installed packages. Independent jobs continue when another platform fails; a newer run on the same ref cancels the older run.
 
 A workflow definition is not proof that a platform passes. Qualification must cite a successful run for the relevant revision. Historical [local validation](VALIDATION.md) and [live service validation](LIVE_VALIDATION.md) remain separate evidence.
+
+## Verified run: October 18, 2026 (UTC)
+
+[GitHub Actions run 39099928886](https://github.com/jasonduncan/liboai/actions/runs/39099928886) passed all five jobs at source revision `a59a53dc75ec448820751cf5ddb34372a32a94e7`:
+
+| Configuration | Observed compiler | Result |
+| --- | --- | --- |
+| Linux static / default crypto | GCC 13.3.0 | Passed |
+| Linux shared / OpenSSL | GCC 13.3.0 | Passed |
+| macOS static / CommonCrypto | AppleClang 17.0.0.17000013 | Passed |
+| Windows static / OpenSSL | MSVC 19.44.35229.0 | Passed |
+| Linux static / OpenSSL / ASan + UBSan | Clang 18.1.3 | Passed |
+
+Every job compiled all examples, passed `conversation_history`, `api_modernization`, and `rerank_http`, installed the package, and built and ran both consumer configurations. The same driver also passed locally on macOS against this revision. Workflow lint (`actionlint` 1.7.12), Python compilation, and `git diff --check` passed.
+
+Qualification exposed and resolved Windows portability issues: toolchain selection after compiler initialization, `max` macro collisions, a source-encoding-dependent UTF-8 fixture, and implicit conversion of const JSON bodies to `std::optional` under MSVC. Request implementations now construct those optional bodies explicitly; public signatures are unchanged. The vcpkg cURL feature was corrected to `ssl`, which selects Schannel on Windows.
+
+The follow-up documentation commit records this result without changing the tested source or workflow. These passes cover the matrix above, not Windows shared-library exports, cross-toolchain ABI compatibility, old cURL form APIs, live services, or deployment.
