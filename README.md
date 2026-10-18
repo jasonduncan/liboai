@@ -6,6 +6,20 @@
 <h1>Introduction</h1>
 <p><code>liboai</code> is a simple, <b>unofficial</b> C++17 library for the OpenAI API. It allows developers to access OpenAI endpoints through a simple collection of methods and classes. The library can most effectively be thought of as a <b>spiritual port</b> of OpenAI's Python library, simply called <code>openai</code>, due to its similar structure - with few exceptions.
 
+## Releases
+
+Download a pinned version from [GitHub Releases](https://github.com/jasonduncan/liboai/releases). [v4.1.0](https://github.com/jasonduncan/liboai/releases/tag/v4.1.0) is the first release of this maintained fork; see the [changelog](CHANGELOG.md) for changes and limitations. Releases include source archives and SHA-256 checksums, with no bundled dependencies or prebuilt binaries. vcpkg packaging is planned for later.
+
+With CMake 3.21+, a C++17 compiler, cURL development files, and nlohmann-json installed, extract `liboai-4.1.0.tar.gz` and build:
+
+```sh
+cmake -S liboai-4.1.0 -B build/liboai -DCMAKE_BUILD_TYPE=Release -DLIBOAI_INSTALL=ON -DCMAKE_INSTALL_PREFIX="$PWD/install"
+cmake --build build/liboai --config Release --parallel 1
+cmake --install build/liboai --config Release
+```
+
+Add dependency locations through `CMAKE_PREFIX_PATH` or your existing toolchain as needed. Consumers use `find_package(oai 4.1 CONFIG REQUIRED)` and link `oai::oai`; point their `CMAKE_PREFIX_PATH` at the installation. See the [tested platform configurations](documentation/maintenance/CI.md) and [maintainer release procedure](documentation/maintenance/RELEASING.md).
+
 ## OpenAI API coverage
 
 Status of this checkout, reviewed October 17, 2026 against the [OpenAI API reference](https://developers.openai.com/api/reference/overview). This grid covers major API families; it is not a claim of complete endpoint or model coverage.

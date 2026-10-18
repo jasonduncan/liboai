@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.21)
 
 include(CMakePackageConfigHelpers)
 
-project(oai VERSION 4.0.1)
+project(oai VERSION 4.1.0)
 
 if(MSVC)
   set(CMAKE_DEBUG_POSTFIX "d")
