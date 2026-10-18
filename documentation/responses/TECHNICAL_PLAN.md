@@ -1,5 +1,7 @@
 # Responses API Migration Plan (GPT-5.2)
 
+> Historical design: retained as the original migration proposal. Responses creation, async creation, and common parameter serialization are now implemented. The current implementation backlog and acceptance criteria are in the [OpenAI API modernization plan](../maintenance/API_MODERNIZATION_PLAN.md). The original state descriptions and checklists below are not current status; recheck model-specific constraints against the official API before implementation.
+
 ## Goal
 Add first-class support for the OpenAI Responses API so liboai can use GPT-5.2 and gpt-5.2-pro, while keeping existing Chat Completions support for backward compatibility.
 

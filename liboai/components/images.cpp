@@ -107,3 +107,42 @@ liboai::Response liboai::Images::create_variation(const std::filesystem::path& i
 liboai::FutureResponse liboai::Images::create_variation_async(const std::filesystem::path& image, std::optional<uint8_t> n, std::optional<std::string> size, std::optional<std::string> response_format, std::optional<std::string> user) const & noexcept(false) {
 	return std::async(std::launch::async, &liboai::Images::create_variation, this, image, n, size, response_format, user);
 }
+
+liboai::ApiResult liboai::Images::create_json(const nlohmann::json& body, const RequestOptions& options) const & {
+    return detail::request(this->openai_root_, "POST", "/images/generations", body, {}, options);
+}
+
+std::future<liboai::ApiResult> liboai::Images::create_json_async(const nlohmann::json& body, const RequestOptions& options) const & {
+    return std::async(std::launch::async, [this, body, options]() mutable { return this->create_json(body, options); });
+}
+
+liboai::ApiResult liboai::Images::create_edit_multipart(const netimpl::components::Multipart& parts, const RequestOptions& options) const & {
+    return detail::multipart_request(this->openai_root_, "/images/edits", parts, options);
+}
+
+std::future<liboai::ApiResult> liboai::Images::create_edit_multipart_async(const netimpl::components::Multipart& parts, const RequestOptions& options) const & {
+    auto snapshot = detail::snapshot_multipart(parts);
+    return std::async(std::launch::async, [this, snapshot, options]() mutable { return this->create_edit_multipart(*snapshot, options); });
+}
+
+liboai::ParsedStreamResult liboai::Images::create_stream(const nlohmann::json& body, SseCallback callback, const RequestOptions& options) const & {
+    auto payload = body;
+    payload["stream"] = true;
+    return detail::parsed_stream_request(this->openai_root_, "POST", "/images/generations", payload, {}, options, std::move(callback));
+}
+
+std::future<liboai::ParsedStreamResult> liboai::Images::create_stream_async(const nlohmann::json& body, SseCallback callback, const RequestOptions& options) const & {
+    return std::async(std::launch::async, [this, body, callback, options]() mutable { return this->create_stream(body, callback, options); });
+}
+
+liboai::ParsedStreamResult liboai::Images::create_edit_stream(const netimpl::components::Multipart& parts, SseCallback callback, const RequestOptions& options) const & {
+    auto form = parts;
+    form.parts.erase(std::remove_if(form.parts.begin(), form.parts.end(), [](const auto& p) { return p.name == "stream"; }), form.parts.end());
+    form.parts.emplace_back("stream", "true");
+    return detail::parsed_multipart_stream_request(this->openai_root_, "/images/edits", form, options, std::move(callback));
+}
+
+std::future<liboai::ParsedStreamResult> liboai::Images::create_edit_stream_async(const netimpl::components::Multipart& parts, SseCallback callback, const RequestOptions& options) const & {
+    auto snapshot = detail::snapshot_multipart(parts);
+    return std::async(std::launch::async, [this, snapshot, callback, options]() mutable { return this->create_edit_stream(*snapshot, callback, options); });
+}

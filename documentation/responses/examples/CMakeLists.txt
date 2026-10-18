@@ -4,3 +4,4 @@ project(responses)
 
 add_basic_example(create_response)
 add_basic_example(create_response_typed)
+add_basic_example(modern_workflows)

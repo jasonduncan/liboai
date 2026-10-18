@@ -13,6 +13,8 @@
 
 #include "../core/authorization.h"
 #include "../core/response.h"
+#include "../core/request.h"
+#include "../core/sse.h"
 
 #include <limits>
 
@@ -969,6 +971,22 @@ namespace liboai {
 				std::optional<std::string> user = std::nullopt
 			) const & noexcept(false);
 			
+			// Modern raw APIs preserve all JSON fields. See documentation/maintenance/MODERN_COMPONENTS.md.
+			LIBOAI_EXPORT ApiResult create_json(const nlohmann::json& body, const RequestOptions& options = {}) const &;
+			LIBOAI_EXPORT std::future<ApiResult> create_json_async(const nlohmann::json& body, const RequestOptions& options = {}) const &;
+			LIBOAI_EXPORT ApiResult retrieve(const std::string& id, const RequestOptions& options = {}) const &;
+			LIBOAI_EXPORT std::future<ApiResult> retrieve_async(const std::string& id, const RequestOptions& options = {}) const &;
+			LIBOAI_EXPORT ApiResult remove(const std::string& id, const RequestOptions& options = {}) const &;
+			LIBOAI_EXPORT std::future<ApiResult> remove_async(const std::string& id, const RequestOptions& options = {}) const &;
+			LIBOAI_EXPORT ApiResult update(const std::string& id, const nlohmann::json& body, const RequestOptions& options = {}) const &;
+			LIBOAI_EXPORT std::future<ApiResult> update_async(const std::string& id, const nlohmann::json& body, const RequestOptions& options = {}) const &;
+			LIBOAI_EXPORT ApiResult list(const Query& query = {}, const RequestOptions& options = {}) const &;
+			LIBOAI_EXPORT std::future<ApiResult> list_async(const Query& query = {}, const RequestOptions& options = {}) const &;
+			LIBOAI_EXPORT ApiResult list_messages(const std::string& id, const Query& query = {}, const RequestOptions& options = {}) const &;
+			LIBOAI_EXPORT std::future<ApiResult> list_messages_async(const std::string& id, const Query& query = {}, const RequestOptions& options = {}) const &;
+			LIBOAI_EXPORT ParsedStreamResult create_stream(const nlohmann::json& body, SseCallback callback, const RequestOptions& options = {}) const &;
+			LIBOAI_EXPORT std::future<ParsedStreamResult> create_stream_async(const nlohmann::json& body, SseCallback callback, const RequestOptions& options = {}) const &;
+
 		private:
 			Authorization& auth_ = Authorization::Authorizer();
 			using StrippedStreamCallback = std::function<bool(std::string, intptr_t)>;

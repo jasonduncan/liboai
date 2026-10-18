@@ -27,3 +27,6 @@ add_subdirectory(models/examples)
 add_subdirectory(moderations/examples)
 add_subdirectory(responses/examples)
 add_subdirectory(rerank/examples)
+
+add_subdirectory(resources/examples)
+add_subdirectory(extensions/examples)

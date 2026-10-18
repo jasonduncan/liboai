@@ -9,6 +9,7 @@
 
 #include "../core/authorization.h"
 #include "../core/response.h"
+#include "../core/sse.h"
 
 namespace liboai {
 	class Responses final : private Network {
@@ -31,7 +32,7 @@ namespace liboai {
 				@param max_output_tokens   Optional max output tokens to generate.
 				@param temperature         Optional sampling temperature.
 				@param top_p               Optional nucleus sampling value.
-				@param seed                Optional deterministic seed.
+				@param seed                Legacy pass-through; not a documented Responses field.
 				@param tools               Optional tools array.
 				@param tool_choice         Optional tool choice configuration.
 				@param parallel_tool_calls Optional parallel tool calls toggle.
@@ -78,7 +79,7 @@ namespace liboai {
 				@param max_output_tokens  Optional max output tokens to generate.
 				@param temperature        Optional sampling temperature.
 				@param top_p              Optional nucleus sampling value.
-				@param seed               Optional deterministic seed.
+				@param seed               Legacy pass-through; not a documented Responses field.
 				@param tools              Optional tools array.
 				@param tool_choice        Optional tool choice configuration.
 				@param parallel_tool_calls Optional parallel tool calls toggle.
@@ -138,7 +139,7 @@ namespace liboai {
 				@param max_output_tokens  Optional max output tokens to generate.
 				@param temperature        Optional sampling temperature.
 				@param top_p              Optional nucleus sampling value.
-				@param seed               Optional deterministic seed.
+				@param seed               Legacy pass-through; not a documented Responses field.
 				@param tools              Optional tools array.
 				@param tool_choice        Optional tool choice configuration.
 				@param parallel_tool_calls Optional parallel tool calls toggle.
@@ -186,6 +187,44 @@ namespace liboai {
 				const nlohmann::json& request,
 				std::optional<StreamCallback> stream = std::nullopt
 			) const & noexcept(false);
+
+
+            // Modern operations preserve raw JSON and return additive diagnostics.
+            LIBOAI_EXPORT ApiResult create_with_options(const nlohmann::json& request,
+                const RequestOptions& options = {}, std::optional<StreamCallback> stream = std::nullopt) const &;
+            LIBOAI_EXPORT FutureApiResult create_with_options_async(const nlohmann::json& request,
+                const RequestOptions& options = {}, std::optional<StreamCallback> stream = std::nullopt) const &;
+            LIBOAI_EXPORT ApiResult retrieve(const std::string& response_id, const Query& query = {},
+                const RequestOptions& options = {}, std::optional<StreamCallback> stream = std::nullopt) const &;
+            LIBOAI_EXPORT FutureApiResult retrieve_async(const std::string& response_id, const Query& query = {},
+                const RequestOptions& options = {}, std::optional<StreamCallback> stream = std::nullopt) const &;
+            LIBOAI_EXPORT ApiResult remove(const std::string& response_id, const RequestOptions& options = {}) const &;
+            LIBOAI_EXPORT FutureApiResult remove_async(const std::string& response_id, const RequestOptions& options = {}) const &;
+            LIBOAI_EXPORT ApiResult cancel(const std::string& response_id,
+                const nlohmann::json& request = nlohmann::json::object(), const RequestOptions& options = {}) const &;
+            LIBOAI_EXPORT FutureApiResult cancel_async(const std::string& response_id,
+                const nlohmann::json& request = nlohmann::json::object(), const RequestOptions& options = {}) const &;
+            LIBOAI_EXPORT ApiResult list_input_items(const std::string& response_id, const Query& query = {},
+                const RequestOptions& options = {}) const &;
+            LIBOAI_EXPORT FutureApiResult list_input_items_async(const std::string& response_id, const Query& query = {},
+                const RequestOptions& options = {}) const &;
+            LIBOAI_EXPORT ApiResult count_input_tokens(const nlohmann::json& request, const RequestOptions& options = {}) const &;
+            LIBOAI_EXPORT FutureApiResult count_input_tokens_async(const nlohmann::json& request, const RequestOptions& options = {}) const &;
+            LIBOAI_EXPORT ApiResult compact(const nlohmann::json& request, const RequestOptions& options = {}) const &;
+            LIBOAI_EXPORT FutureApiResult compact_async(const nlohmann::json& request, const RequestOptions& options = {}) const &;
+
+            // Parsed methods force streaming; returning false stops local receipt only.
+            LIBOAI_EXPORT ParsedStreamResult create_stream(const nlohmann::json& request,
+                SseCallback callback, const RequestOptions& options = {}) const &;
+            LIBOAI_EXPORT FutureParsedStreamResult create_stream_async(const nlohmann::json& request,
+                SseCallback callback, const RequestOptions& options = {}) const &;
+            LIBOAI_EXPORT ParsedStreamResult retrieve_stream(const std::string& response_id,
+                SseCallback callback, const Query& query = {}, const RequestOptions& options = {}) const &;
+            LIBOAI_EXPORT FutureParsedStreamResult retrieve_stream_async(const std::string& response_id,
+                SseCallback callback, const Query& query = {}, const RequestOptions& options = {}) const &;
+            // Optional agent_name selects item.agent.agent_name (for example /root).
+            LIBOAI_EXPORT static std::string output_text(const nlohmann::json& response,
+                const std::optional<std::string>& agent_name = std::nullopt);
 
 		private:
 			Authorization& auth_ = Authorization::Authorizer();

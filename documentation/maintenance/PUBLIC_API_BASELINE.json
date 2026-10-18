@@ -1,0 +1,170 @@
+{
+  "plan_baseline_commit": "69c8a81f2904c345c198134d7ee081013df02233",
+  "implementation_baseline_commit": "3707248dd6a95a93e559968e6bf7633ef6adbbe9",
+  "baseline_headers": [
+    {
+      "path": "liboai/include/components/audio.h",
+      "sha256": "5d5fa8b21d8f48786855532afb6d8bf9d4d36b86d28fe0325afe468e9ee4db2e"
+    },
+    {
+      "path": "liboai/include/components/azure.h",
+      "sha256": "674ee7a191c38292f4dffff4995c0b8b035a9f523c172754597029b74646dd82"
+    },
+    {
+      "path": "liboai/include/components/chat.h",
+      "sha256": "d7ba34b714d6c2351d6186f76c4b7f5d15555d574f432b5ddb11a22735bb1a36"
+    },
+    {
+      "path": "liboai/include/components/completions.h",
+      "sha256": "30dc7375b7fd73f8a3aeeb7a575fb476fe48e536491d3c9ea28a763b39d20d9a"
+    },
+    {
+      "path": "liboai/include/components/edits.h",
+      "sha256": "e482d3ad040cb70ff647ac8c562da219ab694bfb7058b3eea03d8b9f2dd5ddac"
+    },
+    {
+      "path": "liboai/include/components/embeddings.h",
+      "sha256": "f62ca67686336222e5ad58444485d152ec4ce72790be61a14364af2f2b73fca2"
+    },
+    {
+      "path": "liboai/include/components/files.h",
+      "sha256": "f801046863089eaa09dcc686836fec685a49d2bf1c5d444df22bd68762f9a34e"
+    },
+    {
+      "path": "liboai/include/components/fine_tunes.h",
+      "sha256": "79779a0034af7ff7f956460b3bf71fa71d4b74b59985647bae3dfced2990be22"
+    },
+    {
+      "path": "liboai/include/components/images.h",
+      "sha256": "b2c0b32b34fb75186bb8de0b819648dc3bdb4e03f7988c9b1d915c19d5946e43"
+    },
+    {
+      "path": "liboai/include/components/models.h",
+      "sha256": "39b8bcb7a443ad9350aa6f557b283efdbe84f8e9ca43a78f9e7f0d67e5507b5a"
+    },
+    {
+      "path": "liboai/include/components/moderations.h",
+      "sha256": "d3de6fb6655a215a41cb9287423038f91e039daf03b3bff75ef8c10e78416837"
+    },
+    {
+      "path": "liboai/include/components/rerank.h",
+      "sha256": "da7fbf22350e1ec7d8f8c79f3b5c0fb6e1e46a793d65f2bf0676a1c4e44cd07a"
+    },
+    {
+      "path": "liboai/include/components/responses.h",
+      "sha256": "4b920b9017cac3cfa55f641a9336b8b229200d98516e12728a63e713629d9c26"
+    },
+    {
+      "path": "liboai/include/core/authorization.h",
+      "sha256": "35935feb30db173ec0ff023589d864694b4f21507f72da9de192daed5079a532"
+    },
+    {
+      "path": "liboai/include/core/exception.h",
+      "sha256": "fa844c8aa5239f71107ac2c634be15a7c20565716c84b855aa59be294ff66ebd"
+    },
+    {
+      "path": "liboai/include/core/netimpl.h",
+      "sha256": "841d63589ce6dca621f18d05bff925ec43d86a7e60ec4db16c5f0f8500f68ac2"
+    },
+    {
+      "path": "liboai/include/core/network.h",
+      "sha256": "8e5f407327f7d66b53f23c7b1f529926a4865a62e7261916b96bb5405560f1b2"
+    },
+    {
+      "path": "liboai/include/core/response.h",
+      "sha256": "2950b41aff389ed474ea69828af3b2bd03a9088ea464291481d49cafa3267237"
+    },
+    {
+      "path": "liboai/include/liboai.h",
+      "sha256": "7a4abf79ef038cb28824793aa2b970e494a66910b73f4bf4b4d13be2bae6aa27"
+    }
+  ],
+  "layout_probe": {
+    "platform": "macOS arm64",
+    "compiler": "Apple clang version 21.0.0 (clang-2100.3.34.2)",
+    "all_equal": true,
+    "measurements": {
+      "OpenAI": {
+        "size": 112,
+        "alignment": 8
+      },
+      "Response": {
+        "size": 128,
+        "alignment": 8
+      },
+      "Responses": {
+        "size": 56,
+        "alignment": 8
+      },
+      "Audio": {
+        "size": 56,
+        "alignment": 8
+      },
+      "Azure": {
+        "size": 56,
+        "alignment": 8
+      },
+      "ChatCompletion": {
+        "size": 56,
+        "alignment": 8
+      },
+      "Completions": {
+        "size": 56,
+        "alignment": 8
+      },
+      "Edits": {
+        "size": 56,
+        "alignment": 8
+      },
+      "Embeddings": {
+        "size": 56,
+        "alignment": 8
+      },
+      "Files": {
+        "size": 56,
+        "alignment": 8
+      },
+      "FineTunes": {
+        "size": 56,
+        "alignment": 8
+      },
+      "Images": {
+        "size": 56,
+        "alignment": 8
+      },
+      "Models": {
+        "size": 56,
+        "alignment": 8
+      },
+      "Moderations": {
+        "size": 56,
+        "alignment": 8
+      },
+      "Rerank": {
+        "size": 56,
+        "alignment": 8
+      },
+      "Conversation": {
+        "size": 80,
+        "alignment": 8
+      },
+      "Authorization": {
+        "size": 152,
+        "alignment": 8
+      },
+      "netimpl::Session": {
+        "size": 336,
+        "alignment": 8
+      },
+      "exception::OpenAIException": {
+        "size": 88,
+        "alignment": 8
+      },
+      "exception::OpenAIRateLimited": {
+        "size": 88,
+        "alignment": 8
+      }
+    }
+  },
+  "scope": "Header hashes and local size/alignment comparison only; not an ABI guarantee."
+}

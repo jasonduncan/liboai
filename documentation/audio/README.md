@@ -94,3 +94,8 @@ liboai::FutureResponse speech_async(
 <br>
 <h2>Example Usage</h2>
 <p>For example usage of the above function(s), please refer to the <a href="./examples">examples</a> folder.
+
+
+## Modern request interfaces
+
+See [modern component APIs](../maintenance/MODERN_COMPONENTS.md) for additive JSON/multipart methods, request options, streaming, async ownership, and examples. Existing interfaces remain available.

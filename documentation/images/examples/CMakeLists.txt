@@ -10,3 +10,5 @@ add_basic_example(generate_image)
 add_basic_example(generate_image_async)
 add_basic_example(generate_variation)
 add_basic_example(generate_variation_async)
+
+add_basic_example(modern_images)

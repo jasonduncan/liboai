@@ -1,6 +1,9 @@
 <h1>Maintainer Notes</h1>
 <p>This doc summarizes where PRs live now and how to review them efficiently.</p>
 
+<h3>API modernization</h3>
+<p>The <a href="./API_MODERNIZATION_PLAN.md">OpenAI API modernization plan</a> records the October 17, 2026 coverage baseline, implementation phases, compatibility rules, and acceptance criteria. The root <a href="../../ROADMAP.md">roadmap</a> summarizes the current priorities.</p>
+
 <h3>Repositories and PR numbering</h3>
 <ul>
   <li>Canonical repo (accept PRs here): <a href="https://github.com/jasonduncan/liboai">jasonduncan/liboai</a>.</li>
@@ -46,3 +49,17 @@ ctest --test-dir build --output-on-failure
   <li>Test top-level build + install, and <code>add_subdirectory</code> usage in a parent project.</li>
   <li>Ensure new options are documented and defaults preserve existing behavior.</li>
 </ul>
+
+<h3>Modern API usage and evidence</h3>
+
+- [Decisions and Skills extension plan](./DECISIONS_SKILLS_PLAN.md)
+- [Decisions usage](../extensions/DECISIONS.md) and [Skills usage](../extensions/SKILLS.md)
+- [Coverage and validation](./API_COVERAGE.md)
+- [Live validation results and limitations](./LIVE_VALIDATION.md)
+- [Request options and diagnostics](./REQUEST_OPTIONS.md)
+- [Modern component methods](./MODERN_COMPONENTS.md)
+- [Supporting resources](../resources/resources.md)
+- [Webhook verification](./WEBHOOK_VERIFICATION.md)
+- [Historical interfaces](./HISTORICAL_APIS.md)
+
+The HTTP fixture suite uses Python 3's standard library only, as test infrastructure. `BUILD_EXAMPLES=ON` compiles current and explicitly historical examples without running live API requests.

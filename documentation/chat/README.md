@@ -61,3 +61,12 @@ liboai::FutureResponse create_async(
 <br>
 <h2>Example Usage</h2>
 <p>For example usage of the above function(s), please refer to the <a href="./examples">examples</a> folder.
+
+
+## Modern request interfaces
+
+See [modern component APIs](../maintenance/MODERN_COMPONENTS.md) for additive JSON/multipart methods, request options, streaming, async ownership, and examples. Existing interfaces remain available.
+
+### Stored completion visibility
+
+The [live validation run](../maintenance/LIVE_VALIDATION.md) observed 404 responses immediately after creating a completion with `store: true`. The same ID later supported retrieval, metadata update, messages, listing, and deletion. Handle readiness explicitly; the client does not automatically retry stored-completion operations.

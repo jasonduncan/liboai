@@ -41,6 +41,15 @@
 #include "components/models.h"
 #include "components/moderations.h"
 #include "components/responses.h"
+#include "components/conversations.h"
+#include "components/batch.h"
+#include "components/uploads.h"
+#include "components/vector_stores.h"
+#include "components/containers.h"
+#include "components/webhooks.h"
+#include "components/decisions.h"
+#include "components/skills.h"
+#include "core/webhook_verification.h"
 
 namespace liboai {
 	class OpenAI {

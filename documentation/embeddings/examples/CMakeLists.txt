@@ -4,3 +4,5 @@ project(embeddings)
 
 add_basic_example(create_embedding)
 add_basic_example(create_embedding_async)
+
+add_basic_example(modern_embeddings)

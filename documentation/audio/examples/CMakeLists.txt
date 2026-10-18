@@ -8,3 +8,5 @@ add_basic_example(create_transcription)
 add_basic_example(create_transcription_async)
 add_basic_example(create_translation)
 add_basic_example(create_translation_async)
+
+add_basic_example(modern_audio)

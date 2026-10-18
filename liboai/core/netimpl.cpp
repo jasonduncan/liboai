@@ -887,14 +887,12 @@ void liboai::netimpl::Session::SetMultipart(const components::Multipart& multipa
 
 		for (const auto& part : multipart.parts) {
 			std::vector<curl_mimepart*> mimedata;
-			if (!part.content_type.empty()) {
-				mimedata.push_back(curl_mime_addpart(this->mime));
-				e[0] = curl_mime_type(mimedata.back(), part.content_type.c_str());
-			}
 			if (part.is_file) {
 				CURLcode fe[3]; memset(fe, CURLcode::CURLE_OK, sizeof(fe));
 				for (const auto& file : part.files) {
 					mimedata.push_back(curl_mime_addpart(this->mime));
+                if (!part.content_type.empty())
+                    ErrorCheck(curl_mime_type(mimedata.back(), part.content_type.c_str()), "SetMultipart content type");
 					fe[0] = curl_mime_name(mimedata.back(), part.name.c_str());
 					fe[1] = curl_mime_filedata(mimedata.back(), file.filepath.c_str());
 					if (file.hasOverridedFilename()) {
@@ -907,14 +905,18 @@ void liboai::netimpl::Session::SetMultipart(const components::Multipart& multipa
 			}
 			else if (part.is_buffer) {
 				mimedata.push_back(curl_mime_addpart(this->mime));
+                if (!part.content_type.empty())
+                    ErrorCheck(curl_mime_type(mimedata.back(), part.content_type.c_str()), "SetMultipart content type");
 				e[1] = curl_mime_name(mimedata.back(), part.name.c_str());
 				e[2] = curl_mime_filename(mimedata.back(), part.value.c_str());
 				e[3] = curl_mime_data(mimedata.back(), reinterpret_cast<const char*>(part.data), part.datalen);
 			}
 			else {
 				mimedata.push_back(curl_mime_addpart(this->mime));
+                if (!part.content_type.empty())
+                    ErrorCheck(curl_mime_type(mimedata.back(), part.content_type.c_str()), "SetMultipart content type");
 				e[3] = curl_mime_name(mimedata.back(), part.name.c_str());
-				e[4] = curl_mime_data(mimedata.back(), part.value.c_str(), CURL_ZERO_TERMINATED);
+				e[4] = curl_mime_data(mimedata.back(), part.value.data(), part.value.size());
 			}
 		}
 		e[5] = curl_easy_setopt(this->curl_, CURLOPT_MIMEPOST, this->mime);
@@ -1005,14 +1007,12 @@ void liboai::netimpl::Session::SetMultipart(components::Multipart&& multipart) {
 
 		for (const auto& part : multipart.parts) {
 			std::vector<curl_mimepart*> mimedata;
-			if (!part.content_type.empty()) {
-				mimedata.push_back(curl_mime_addpart(this->mime));
-				e[0] = curl_mime_type(mimedata.back(), part.content_type.c_str());
-			}
 			if (part.is_file) {
 				CURLcode fe[3]; memset(fe, CURLcode::CURLE_OK, sizeof(fe));
 				for (const auto& file : part.files) {
 					mimedata.push_back(curl_mime_addpart(this->mime));
+                if (!part.content_type.empty())
+                    ErrorCheck(curl_mime_type(mimedata.back(), part.content_type.c_str()), "SetMultipart content type");
 					fe[0] = curl_mime_name(mimedata.back(), part.name.c_str());
 					fe[1] = curl_mime_filedata(mimedata.back(), file.filepath.c_str());
 					if (file.hasOverridedFilename()) {
@@ -1025,14 +1025,18 @@ void liboai::netimpl::Session::SetMultipart(components::Multipart&& multipart) {
 			}
 			else if (part.is_buffer) {
 				mimedata.push_back(curl_mime_addpart(this->mime));
+                if (!part.content_type.empty())
+                    ErrorCheck(curl_mime_type(mimedata.back(), part.content_type.c_str()), "SetMultipart content type");
 				e[1] = curl_mime_name(mimedata.back(), part.name.c_str());
 				e[2] = curl_mime_filename(mimedata.back(), part.value.c_str());
 				e[3] = curl_mime_data(mimedata.back(), reinterpret_cast<const char*>(part.data), part.datalen);
 			}
 			else {
 				mimedata.push_back(curl_mime_addpart(this->mime));
+                if (!part.content_type.empty())
+                    ErrorCheck(curl_mime_type(mimedata.back(), part.content_type.c_str()), "SetMultipart content type");
 				e[3] = curl_mime_name(mimedata.back(), part.name.c_str());
-				e[4] = curl_mime_data(mimedata.back(), part.value.c_str(), CURL_ZERO_TERMINATED);
+				e[4] = curl_mime_data(mimedata.back(), part.value.data(), part.value.size());
 			}
 		}
 		e[5] = curl_easy_setopt(this->curl_, CURLOPT_MIMEPOST, this->mime);
@@ -1571,3 +1575,109 @@ void liboai::netimpl::ErrorCheck(CURLcode ecode, std::string_view where) {
 		}
 	}
 #endif
+
+// Opt-in modern response path. Existing Session operations retain their behavior
+// and layout. Callback state is scoped to this synchronous transfer.
+#include "../include/core/request.h"
+
+liboai::ApiResult liboai::netimpl::Session::ExecuteDetailed(const std::string& method) {
+    response_string_.clear();
+    header_string_.clear();
+    if (method == "GET") PrepareGet();
+    else if (method == "POST") PreparePost();
+    else if (method == "DELETE") PrepareDelete();
+    else if (method == "PATCH") {
+        PreparePost();
+        ErrorCheck(curl_easy_setopt(curl_, CURLOPT_CUSTOMREQUEST, "PATCH"), "ExecuteDetailed");
+    } else throw std::invalid_argument("Unsupported HTTP method");
+    ErrorCheck(curl_easy_setopt(curl_, CURLOPT_NOSIGNAL, 1L), "ExecuteDetailed");
+
+    struct Transfer {
+        CURL* curl;
+        const components::WriteCallback* callback;
+        std::string* body;
+        std::string* response_headers;
+        bool stopped = false;
+        std::exception_ptr exception;
+    } transfer{curl_, &write_, &response_string_, &header_string_, false, {}};
+    const auto writer = +[](char* bytes, size_t size, size_t count, void* opaque) noexcept -> size_t {
+        auto& state = *static_cast<Transfer*>(opaque);
+        const size_t length = size * count;
+        try {
+            long status = 0;
+            curl_easy_getinfo(state.curl, CURLINFO_RESPONSE_CODE, &status);
+            if (state.callback->callback && status >= 200 && status < 300) {
+                if (!(*state.callback)(std::string(bytes, length))) {
+                    state.stopped = true;
+                    return 0;
+                }
+            } else state.body->append(bytes, length);
+            return length;
+        } catch (...) {
+            state.exception = std::current_exception();
+            return 0;
+        }
+    };
+    const auto header_writer = +[](char* bytes, size_t size, size_t count, void* opaque) noexcept -> size_t {
+        auto& state = *static_cast<Transfer*>(opaque);
+        try { state.response_headers->append(bytes, size * count); return size * count; }
+        catch (...) { state.exception = std::current_exception(); return 0; }
+    };
+    ErrorCheck(curl_easy_setopt(curl_, CURLOPT_HEADERFUNCTION, header_writer), "ExecuteDetailed");
+    ErrorCheck(curl_easy_setopt(curl_, CURLOPT_HEADERDATA, &transfer), "ExecuteDetailed");
+    ErrorCheck(curl_easy_setopt(curl_, CURLOPT_WRITEFUNCTION, writer), "ExecuteDetailed");
+    ErrorCheck(curl_easy_setopt(curl_, CURLOPT_WRITEDATA, &transfer), "ExecuteDetailed");
+    const CURLcode code = curl_easy_perform(curl_);
+    // A reusable Session must never retain a stack pointer, including on failure.
+    curl_easy_setopt(curl_, CURLOPT_WRITEFUNCTION, components::writeFunction);
+    curl_easy_setopt(curl_, CURLOPT_WRITEDATA, &response_string_);
+    curl_easy_setopt(curl_, CURLOPT_HEADERFUNCTION, components::writeFunction);
+    curl_easy_setopt(curl_, CURLOPT_HEADERDATA, &header_string_);
+    if (transfer.exception) std::rethrow_exception(transfer.exception);
+
+    ApiResult result;
+    auto& response = result.response;
+    curl_easy_getinfo(curl_, CURLINFO_RESPONSE_CODE, &response.status_code);
+    curl_easy_getinfo(curl_, CURLINFO_TOTAL_TIME, &response.elapsed);
+    char* effective = nullptr;
+    curl_easy_getinfo(curl_, CURLINFO_EFFECTIVE_URL, &effective);
+    response.url = effective ? effective : "";
+    ParseResponseHeader(header_string_, &response.status_line, &response.reason);
+    response.content = std::move(response_string_);
+    result.locally_cancelled = transfer.stopped;
+    hasBody = false;
+
+    std::istringstream header_stream(header_string_);
+    std::string line;
+    while (std::getline(header_stream, line)) {
+        if (line.rfind("HTTP/", 0) == 0) { result.headers.clear(); continue; }
+        const auto colon = line.find(':');
+        if (colon == std::string::npos) continue;
+        auto value = line.substr(colon + 1);
+        const auto first = value.find_first_not_of(" \t\r");
+        value = first == std::string::npos ? "" : value.substr(first);
+        const auto last = value.find_last_not_of(" \t\r");
+        if (last != std::string::npos) value.resize(last + 1);
+        const auto name = line.substr(0, colon);
+        auto it = result.headers.find(name);
+        if (it == result.headers.end()) result.headers.emplace(name, value);
+        else it->second += ", " + value;
+    }
+    // Binary data is authoritative in content. Only parse JSON media types on
+    // success; on HTTP errors try JSON regardless of a misconfigured proxy type.
+    auto ct = result.headers.find("content-type");
+    std::string media = ct == result.headers.end() ? "" : ct->second;
+    for (char& c : media) if (c >= 'A' && c <= 'Z') c += 'a' - 'A';
+    const bool json_type = media.find("application/json") != std::string::npos || media.find("+json") != std::string::npos;
+    const bool http_error = response.status_code < 200 || response.status_code >= 300;
+    if (!response.content.empty() && (json_type || http_error)) {
+        auto parsed = nlohmann::json::parse(response.content, nullptr, false);
+        if (!parsed.is_discarded()) response.raw_json = std::move(parsed);
+        else if (json_type && !http_error && code == CURLE_OK)
+            throw exception::ResponseParseError(std::move(result));
+    }
+    if (code != CURLE_OK && !transfer.stopped) throw exception::TransportError(std::move(result), code);
+    if (response.status_code == 429) throw exception::ApiRateLimited(std::move(result));
+    if (http_error) throw exception::ApiError(std::move(result));
+    return result;
+}

@@ -41,6 +41,7 @@
 #include "response.h"
 
 namespace liboai {
+	struct ApiResult;
 	namespace netimpl {		
 		static bool _flag = false;
 		
@@ -610,6 +611,7 @@ namespace liboai {
 				Session() = default;
 				~Session() override;
 
+				LIBOAI_EXPORT liboai::ApiResult ExecuteDetailed(const std::string& method);
 				liboai::Response Get();
 				liboai::Response Post();
 				liboai::Response Delete();

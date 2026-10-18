@@ -13,6 +13,8 @@
 
 #include "../core/authorization.h"
 #include "../core/response.h"
+#include "../core/request.h"
+#include "../core/sse.h"
 
 namespace liboai {
 	class Images final : private Network {
@@ -157,6 +159,16 @@ namespace liboai {
 				std::optional<std::string> response_format = std::nullopt,
 				std::optional<std::string> user = std::nullopt
 			) const & noexcept(false);
+
+			// Modern raw APIs preserve all JSON fields. See documentation/maintenance/MODERN_COMPONENTS.md.
+			LIBOAI_EXPORT ApiResult create_json(const nlohmann::json& body, const RequestOptions& options = {}) const &;
+			LIBOAI_EXPORT std::future<ApiResult> create_json_async(const nlohmann::json& body, const RequestOptions& options = {}) const &;
+			LIBOAI_EXPORT ApiResult create_edit_multipart(const netimpl::components::Multipart& parts, const RequestOptions& options = {}) const &;
+			LIBOAI_EXPORT std::future<ApiResult> create_edit_multipart_async(const netimpl::components::Multipart& parts, const RequestOptions& options = {}) const &;
+			LIBOAI_EXPORT ParsedStreamResult create_stream(const nlohmann::json& body, SseCallback callback, const RequestOptions& options = {}) const &;
+			LIBOAI_EXPORT std::future<ParsedStreamResult> create_stream_async(const nlohmann::json& body, SseCallback callback, const RequestOptions& options = {}) const &;
+			LIBOAI_EXPORT ParsedStreamResult create_edit_stream(const netimpl::components::Multipart& parts, SseCallback callback, const RequestOptions& options = {}) const &;
+			LIBOAI_EXPORT std::future<ParsedStreamResult> create_edit_stream_async(const netimpl::components::Multipart& parts, SseCallback callback, const RequestOptions& options = {}) const &;
 
 		private:
 			Authorization& auth_ = Authorization::Authorizer();

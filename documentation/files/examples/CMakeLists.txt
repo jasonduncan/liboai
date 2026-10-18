@@ -12,3 +12,5 @@ add_basic_example(retrieve_file)
 add_basic_example(retrieve_file_async)
 add_basic_example(upload_file)
 add_basic_example(upload_file_async)
+
+add_basic_example(modern_files)

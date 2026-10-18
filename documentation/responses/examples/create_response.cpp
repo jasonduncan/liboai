@@ -13,25 +13,7 @@ int main() {
 
       Response response = oai.Responses->create(request);
 
-      std::string output_text;
-      if (response.raw_json.contains("output")) {
-        for (const auto& item : response["output"]) {
-          if (item.contains("type") && item["type"] == "message") {
-            if (item.contains("content") && item["content"].is_array()) {
-              for (const auto& content : item["content"]) {
-                if (content.contains("type") && content["type"] == "output_text" && content.contains("text")) {
-                  output_text = content["text"].get<std::string>();
-                  break;
-                }
-              }
-            }
-          }
-
-          if (!output_text.empty()) {
-            break;
-          }
-        }
-      }
+      const auto output_text = Responses::output_text(response.raw_json);
 
       if (!output_text.empty()) {
         std::cout << output_text << std::endl;

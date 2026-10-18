@@ -13,6 +13,7 @@
 
 #include "../core/authorization.h"
 #include "../core/response.h"
+#include "../core/request.h"
 
 namespace liboai {
 	class Embeddings final : private Network {
@@ -53,6 +54,10 @@ namespace liboai {
 				std::optional<std::string> input = std::nullopt,
 				std::optional<std::string> user = std::nullopt
 			) const & noexcept(false);
+
+			// Modern raw APIs preserve all JSON fields. See documentation/maintenance/MODERN_COMPONENTS.md.
+			LIBOAI_EXPORT ApiResult create_json(const nlohmann::json& body, const RequestOptions& options = {}) const &;
+			LIBOAI_EXPORT std::future<ApiResult> create_json_async(const nlohmann::json& body, const RequestOptions& options = {}) const &;
 
 		private:
 			Authorization& auth_ = Authorization::Authorizer();

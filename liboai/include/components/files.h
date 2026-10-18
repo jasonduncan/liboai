@@ -13,6 +13,7 @@
 
 #include "../core/authorization.h"
 #include "../core/response.h"
+#include "../core/request.h"
 
 namespace liboai {
 	class Files final : private Network {
@@ -151,6 +152,14 @@ namespace liboai {
 				const std::string& save_to
 			) const & noexcept(false);
 			
+			// Modern raw APIs preserve all JSON fields. See documentation/maintenance/MODERN_COMPONENTS.md.
+			LIBOAI_EXPORT ApiResult create_multipart(const netimpl::components::Multipart& parts, const RequestOptions& options = {}) const &;
+			LIBOAI_EXPORT std::future<ApiResult> create_multipart_async(const netimpl::components::Multipart& parts, const RequestOptions& options = {}) const &;
+			LIBOAI_EXPORT ApiResult list_with_options(const Query& query = {}, const RequestOptions& options = {}) const &;
+			LIBOAI_EXPORT std::future<ApiResult> list_with_options_async(const Query& query = {}, const RequestOptions& options = {}) const &;
+			LIBOAI_EXPORT ApiResult content(const std::string& id, const RequestOptions& options = {}) const &;
+			LIBOAI_EXPORT std::future<ApiResult> content_async(const std::string& id, const RequestOptions& options = {}) const &;
+
 		private:
 			Authorization& auth_ = Authorization::Authorizer();
 	};

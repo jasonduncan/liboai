@@ -219,3 +219,112 @@ liboai::FutureResponse liboai::Responses::create_async(const nlohmann::json& req
 		}
 	);
 }
+
+namespace {
+std::string response_path(const std::string& id) {
+    return "/responses/" + liboai::detail::encode_path_segment(id);
+}
+}
+
+liboai::ApiResult liboai::Responses::create_with_options(const nlohmann::json& request,
+    const RequestOptions& options, std::optional<StreamCallback> stream) const & {
+    return detail::request(openai_root_, "POST", "/responses", request, {}, options, stream);
+}
+liboai::FutureApiResult liboai::Responses::create_with_options_async(const nlohmann::json& request,
+    const RequestOptions& options, std::optional<StreamCallback> stream) const & {
+    return std::async(std::launch::async, [this, request, options, stream] {
+        return create_with_options(request, options, stream);
+    });
+}
+liboai::ApiResult liboai::Responses::retrieve(const std::string& response_id, const Query& query,
+    const RequestOptions& options, std::optional<StreamCallback> stream) const & {
+    return detail::request(openai_root_, "GET", response_path(response_id), std::nullopt, query, options, stream);
+}
+liboai::FutureApiResult liboai::Responses::retrieve_async(const std::string& response_id, const Query& query,
+    const RequestOptions& options, std::optional<StreamCallback> stream) const & {
+    return std::async(std::launch::async, [this, response_id, query, options, stream] {
+        return retrieve(response_id, query, options, stream);
+    });
+}
+liboai::ApiResult liboai::Responses::remove(const std::string& response_id, const RequestOptions& options) const & {
+    return detail::request(openai_root_, "DELETE", response_path(response_id), std::nullopt, {}, options);
+}
+liboai::FutureApiResult liboai::Responses::remove_async(const std::string& response_id, const RequestOptions& options) const & {
+    return std::async(std::launch::async, [this, response_id, options] { return remove(response_id, options); });
+}
+liboai::ApiResult liboai::Responses::cancel(const std::string& response_id,
+    const nlohmann::json& request, const RequestOptions& options) const & {
+    return detail::request(openai_root_, "POST", response_path(response_id) + "/cancel", request, {}, options);
+}
+liboai::FutureApiResult liboai::Responses::cancel_async(const std::string& response_id,
+    const nlohmann::json& request, const RequestOptions& options) const & {
+    return std::async(std::launch::async, [this, response_id, request, options] { return cancel(response_id, request, options); });
+}
+liboai::ApiResult liboai::Responses::list_input_items(const std::string& response_id,
+    const Query& query, const RequestOptions& options) const & {
+    return detail::request(openai_root_, "GET", response_path(response_id) + "/input_items", std::nullopt, query, options);
+}
+liboai::FutureApiResult liboai::Responses::list_input_items_async(const std::string& response_id,
+    const Query& query, const RequestOptions& options) const & {
+    return std::async(std::launch::async, [this, response_id, query, options] { return list_input_items(response_id, query, options); });
+}
+
+liboai::ApiResult liboai::Responses::count_input_tokens(const nlohmann::json& request, const RequestOptions& options) const & {
+    return detail::request(openai_root_, "POST", "/responses/input_tokens", request, {}, options);
+}
+liboai::FutureApiResult liboai::Responses::count_input_tokens_async(const nlohmann::json& request, const RequestOptions& options) const & {
+    return std::async(std::launch::async, [this, request, options] { return count_input_tokens(request, options); });
+}
+
+liboai::ApiResult liboai::Responses::compact(const nlohmann::json& request, const RequestOptions& options) const & {
+    return detail::request(openai_root_, "POST", "/responses/compact", request, {}, options);
+}
+liboai::FutureApiResult liboai::Responses::compact_async(const nlohmann::json& request, const RequestOptions& options) const & {
+    return std::async(std::launch::async, [this, request, options] { return compact(request, options); });
+}
+
+liboai::ParsedStreamResult liboai::Responses::create_stream(const nlohmann::json& request,
+    SseCallback callback, const RequestOptions& options) const & {
+    if (!request.is_object()) throw std::invalid_argument("Responses streaming request must be an object");
+    auto body = request;
+    body["stream"] = true;
+    return detail::parsed_stream_request(openai_root_, "POST", "/responses", body, {}, options, callback);
+}
+liboai::FutureParsedStreamResult liboai::Responses::create_stream_async(const nlohmann::json& request,
+    SseCallback callback, const RequestOptions& options) const & {
+    return std::async(std::launch::async, [this, request, callback, options] { return create_stream(request, callback, options); });
+}
+liboai::ParsedStreamResult liboai::Responses::retrieve_stream(const std::string& response_id,
+    SseCallback callback, const Query& query, const RequestOptions& options) const & {
+    Query streaming_query;
+    for (const auto& entry : query) if (entry.first != "stream") streaming_query.push_back(entry);
+    streaming_query.emplace_back("stream", "true");
+    return detail::parsed_stream_request(openai_root_, "GET", response_path(response_id), std::nullopt, streaming_query, options, callback);
+}
+liboai::FutureParsedStreamResult liboai::Responses::retrieve_stream_async(const std::string& response_id,
+    SseCallback callback, const Query& query, const RequestOptions& options) const & {
+    return std::async(std::launch::async, [this, response_id, callback, query, options] { return retrieve_stream(response_id, callback, query, options); });
+}
+std::string liboai::Responses::output_text(const nlohmann::json& response,
+    const std::optional<std::string>& agent_name) {
+    std::string output;
+    if (!response.is_object()) return output;
+    auto items = response.find("output");
+    if (items == response.end() || !items->is_array()) return output;
+    for (const auto& item : *items) {
+        if (!item.is_object() || item.value("type", nlohmann::json{}) != "message" ||
+            item.value("role", nlohmann::json{}) != "assistant") continue;
+        if (agent_name) {
+            auto agent = item.find("agent");
+            if (agent == item.end() || !agent->is_object() || agent->value("agent_name", nlohmann::json{}) != *agent_name) continue;
+        }
+        auto content = item.find("content");
+        if (content == item.end() || !content->is_array()) continue;
+        for (const auto& part : *content) {
+            if (!part.is_object() || part.value("type", nlohmann::json{}) != "output_text") continue;
+            auto text = part.find("text");
+            if (text != part.end() && text->is_string()) output += text->get<std::string>();
+        }
+    }
+    return output;
+}

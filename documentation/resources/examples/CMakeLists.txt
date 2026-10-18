@@ -1,0 +1,8 @@
+cmake_minimum_required(VERSION 3.13)
+project(resources)
+add_basic_example(conversation_continuation)
+add_basic_example(batch_completion)
+add_basic_example(upload_parts)
+add_basic_example(vector_store_file_search)
+add_basic_example(container_files)
+add_basic_example(webhook_endpoints)

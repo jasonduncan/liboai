@@ -4,3 +4,10 @@ out
 TestApp
 .cache
 /.idea
+
+__pycache__/
+
+# Local API credentials
+.env
+.env.*
+!.env.example

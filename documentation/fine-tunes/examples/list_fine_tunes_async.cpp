@@ -1,3 +1,4 @@
+// Historical compatibility example: this hosted endpoint retired on 2024-01-04.
 #include "liboai.h"
 
 using namespace liboai;

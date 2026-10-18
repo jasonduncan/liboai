@@ -1,3 +1,5 @@
+> **Historical API:** This endpoint retired on January 4, 2024. These symbols and examples remain for source compatibility; they are not a supported hosted workflow. See [historical interfaces](../maintenance/HISTORICAL_APIS.md). No calls are redirected to another endpoint.
+
 <h1>Edits</h1>
 <p>The <code>Edits</code> class is defined in <code>edits.h</code> at <code>liboai::Edits</code>, and its interface can ideally be accessed through a <code>liboai::OpenAI</code> object.
 

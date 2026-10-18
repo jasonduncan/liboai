@@ -1,7 +1,13 @@
 <h1>Documentation</h1>
 <p>Both above and below, you can find resources and documentation for each component of the library.</p>
 
-<h3>Basic Usage</h3>
+<h3>Current API workflows</h3>
+
+Start with [Responses](./responses/README.md). New APIs return `ApiResult` (with the existing `Response` in `.response`) or `FutureApiResult`; legacy methods retain their existing return types. See [request options](./maintenance/REQUEST_OPTIONS.md), [modern components](./maintenance/MODERN_COMPONENTS.md), and [supporting resources](./resources/resources.md). The examples below show the original component interface; the [historical API guide](./maintenance/HISTORICAL_APIS.md) identifies retired interfaces and old model examples. Compile checks do not prove remote service availability.
+
+See the [OpenAI feature comparison](../README.md#openai-api-coverage) and [detailed coverage](./maintenance/API_COVERAGE.md). Independent clients for [Decisions](./extensions/DECISIONS.md) and [Skills](./extensions/SKILLS.md) are also available through `liboai.h`.
+
+<h3>Original component interface</h3>
 <p>In order to understand how to use each component of the library, it would be ideal to first understand the basic structure of the library as a whole. When using <code>liboai</code> in a project, you <b>should</b> only include one header file, <code>liboai.h</code>. This header provides an interface to all other components of the library such as <code>Images</code>, <code>Completions</code>, etc.
 
 See below for both a correct and incorrect example.</p>
@@ -39,7 +45,7 @@ int main() {
 </table>
 
 <br>
-<p>Once we have properly included the necessary header file to use the library--and assuming symbols are linked properly--we can make use of the class in <code>liboai.h</code> to get started. At some point in our source code, we will have to choose when to define a <code>liboai::OpenAI</code> object to access component interfaces. Each component interface stored in this object offers methods associated with it, so, for instance, interface <code>Image</code> will have a method <code>create(...)</code> to generate an image from text. Each non-async method returns a <code>liboai::Response</code> containing response information whereas async methods return a <code>liboai::FutureResponse</code>. However, before we start using these methods, we must first set our authorization information--otherwise it will not work!
+<p>Once we have properly included the necessary header file to use the library--and assuming symbols are linked properly--we can make use of the class in <code>liboai.h</code> to get started. At some point in our source code, we will have to choose when to define a <code>liboai::OpenAI</code> object to access component interfaces. Each component interface stored in this object offers methods associated with it, so, for instance, interface <code>Image</code> will have a method <code>create(...)</code> to generate an image from text. Each legacy non-async method returns a <code>liboai::Response</code> containing response information whereas async methods return a <code>liboai::FutureResponse</code>. However, before we start using these methods, we must first set our authorization information--otherwise it will not work!
 
 <code>liboai::OpenAI</code> also houses another important member, the authorization member, which is used to set authorization information (such as the API key and organization IDs) before we call the API methods. For more information on additional members found in <code>liboai::Authorization</code>, refer to the <a href="./authorization">authorization</a> folder above.
 

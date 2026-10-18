@@ -65,6 +65,8 @@ else()
   endif()
 endif()
 
+option(LIBOAI_WEBHOOK_OPENSSL "Use OpenSSL Crypto for webhook signature verification" OFF)
+
 add_library(${PROJECT_NAME})
 
 function(make_absolute_paths result_var)
@@ -95,6 +97,14 @@ set(COMPONENT_HEADERS_RELATIVE
   "include/components/images.h"
   "include/components/models.h"
   "include/components/moderations.h"
+  "include/components/conversations.h"
+  "include/components/batch.h"
+  "include/components/uploads.h"
+  "include/components/vector_stores.h"
+  "include/components/containers.h"
+  "include/components/webhooks.h"
+  "include/components/decisions.h"
+  "include/components/skills.h"
   "include/components/responses.h"
 )
 
@@ -114,6 +124,14 @@ set(COMPONENT_SOURCES_RELATIVE
   "components/images.cpp"
   "components/models.cpp"
   "components/moderations.cpp"
+  "components/conversations.cpp"
+  "components/batch.cpp"
+  "components/uploads.cpp"
+  "components/vector_stores.cpp"
+  "components/containers.cpp"
+  "components/webhooks.cpp"
+  "components/decisions.cpp"
+  "components/skills.cpp"
   "components/responses.cpp"
 )
 
@@ -126,6 +144,9 @@ set(CORE_HEADERS_RELATIVE
   "include/core/netimpl.h"
   "include/core/network.h"
   "include/core/response.h"
+  "include/core/request.h"
+  "include/core/sse.h"
+  "include/core/webhook_verification.h"
 )
 
 make_absolute_paths(CORE_HEADERS ${CORE_HEADERS_RELATIVE})
@@ -135,6 +156,9 @@ set(CORE_SOURCES_RELATIVE
   "core/authorization.cpp"
   "core/netimpl.cpp"
   "core/response.cpp"
+  "core/request.cpp"
+  "core/sse.cpp"
+  "core/webhook_verification.cpp"
 )
 
 make_absolute_paths(CORE_SOURCES ${CORE_SOURCES_RELATIVE})
@@ -193,4 +217,12 @@ if(LIBOAI_INSTALL)
     "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake"
     DESTINATION "lib/cmake/${PROJECT_NAME}"
   )
+endif()
+
+# cURL does not expose portable HMAC functions. Apple builds use the system
+# CommonCrypto provider; other platforms may opt in to OpenSSL Crypto.
+if(LIBOAI_WEBHOOK_OPENSSL)
+  find_package(OpenSSL REQUIRED COMPONENTS Crypto)
+  target_compile_definitions(oai PRIVATE LIBOAI_WEBHOOK_OPENSSL=1)
+  target_link_libraries(oai PRIVATE OpenSSL::Crypto)
 endif()

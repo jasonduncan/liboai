@@ -1,3 +1,5 @@
+> **Legacy examples:** The model names below are historical. Prefer the [Responses API](../responses/README.md) for new work; compiling an example does not establish hosted model availability.
+
 <h1>Completions</h1>
 <p>The <code>Completions</code> class is defined in <code>completions.h</code> at <code>liboai::Completions</code>, and its interface can ideally be accessed through a <code>liboai::OpenAI</code> object.
 

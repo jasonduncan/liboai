@@ -1164,3 +1164,61 @@ liboai::Functions::index liboai::Functions::GetFunctionIndex(std::string_view fu
 	
 	return -1;
 }
+
+liboai::ApiResult liboai::ChatCompletion::create_json(const nlohmann::json& body, const RequestOptions& options) const & {
+    return detail::request(this->openai_root_, "POST", "/chat/completions", body, {}, options);
+}
+
+std::future<liboai::ApiResult> liboai::ChatCompletion::create_json_async(const nlohmann::json& body, const RequestOptions& options) const & {
+    return std::async(std::launch::async, [this, body, options]() mutable { return this->create_json(body, options); });
+}
+
+liboai::ApiResult liboai::ChatCompletion::retrieve(const std::string& id, const RequestOptions& options) const & {
+    return detail::request(this->openai_root_, "GET", "/chat/completions/" + detail::encode_path_segment(id), std::nullopt, {}, options);
+}
+
+std::future<liboai::ApiResult> liboai::ChatCompletion::retrieve_async(const std::string& id, const RequestOptions& options) const & {
+    return std::async(std::launch::async, [this, id, options]() mutable { return this->retrieve(id, options); });
+}
+
+liboai::ApiResult liboai::ChatCompletion::remove(const std::string& id, const RequestOptions& options) const & {
+    return detail::request(this->openai_root_, "DELETE", "/chat/completions/" + detail::encode_path_segment(id), std::nullopt, {}, options);
+}
+
+std::future<liboai::ApiResult> liboai::ChatCompletion::remove_async(const std::string& id, const RequestOptions& options) const & {
+    return std::async(std::launch::async, [this, id, options]() mutable { return this->remove(id, options); });
+}
+
+liboai::ApiResult liboai::ChatCompletion::update(const std::string& id, const nlohmann::json& body, const RequestOptions& options) const & {
+    return detail::request(this->openai_root_, "POST", "/chat/completions/" + detail::encode_path_segment(id), body, {}, options);
+}
+
+std::future<liboai::ApiResult> liboai::ChatCompletion::update_async(const std::string& id, const nlohmann::json& body, const RequestOptions& options) const & {
+    return std::async(std::launch::async, [this, id, body, options]() mutable { return this->update(id, body, options); });
+}
+
+liboai::ApiResult liboai::ChatCompletion::list(const Query& query, const RequestOptions& options) const & {
+    return detail::request(this->openai_root_, "GET", "/chat/completions", std::nullopt, query, options);
+}
+
+std::future<liboai::ApiResult> liboai::ChatCompletion::list_async(const Query& query, const RequestOptions& options) const & {
+    return std::async(std::launch::async, [this, query, options]() mutable { return this->list(query, options); });
+}
+
+liboai::ApiResult liboai::ChatCompletion::list_messages(const std::string& id, const Query& query, const RequestOptions& options) const & {
+    return detail::request(this->openai_root_, "GET", "/chat/completions/" + detail::encode_path_segment(id) + "/messages", std::nullopt, query, options);
+}
+
+std::future<liboai::ApiResult> liboai::ChatCompletion::list_messages_async(const std::string& id, const Query& query, const RequestOptions& options) const & {
+    return std::async(std::launch::async, [this, id, query, options]() mutable { return this->list_messages(id, query, options); });
+}
+
+liboai::ParsedStreamResult liboai::ChatCompletion::create_stream(const nlohmann::json& body, SseCallback callback, const RequestOptions& options) const & {
+    auto payload = body;
+    payload["stream"] = true;
+    return detail::parsed_stream_request(this->openai_root_, "POST", "/chat/completions", payload, {}, options, std::move(callback));
+}
+
+std::future<liboai::ParsedStreamResult> liboai::ChatCompletion::create_stream_async(const nlohmann::json& body, SseCallback callback, const RequestOptions& options) const & {
+    return std::async(std::launch::async, [this, body, callback, options]() mutable { return this->create_stream(body, callback, options); });
+}

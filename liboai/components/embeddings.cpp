@@ -24,3 +24,11 @@ liboai::Response liboai::Embeddings::create(const std::string& model_id, std::op
 liboai::FutureResponse liboai::Embeddings::create_async(const std::string& model_id, std::optional<std::string> input, std::optional<std::string> user) const & noexcept(false) {
 	return std::async(std::launch::async, &liboai::Embeddings::create, this, model_id, input, user);
 }
+
+liboai::ApiResult liboai::Embeddings::create_json(const nlohmann::json& body, const RequestOptions& options) const & {
+    return detail::request(this->openai_root_, "POST", "/embeddings", body, {}, options);
+}
+
+std::future<liboai::ApiResult> liboai::Embeddings::create_json_async(const nlohmann::json& body, const RequestOptions& options) const & {
+    return std::async(std::launch::async, [this, body, options]() mutable { return this->create_json(body, options); });
+}

@@ -23,3 +23,11 @@ liboai::Response liboai::Moderations::create(const std::string& input, std::opti
 liboai::FutureResponse liboai::Moderations::create_async(const std::string& input, std::optional<std::string> model) const & noexcept(false) {
 	return std::async(std::launch::async, &liboai::Moderations::create, this, input, model);
 }
+
+liboai::ApiResult liboai::Moderations::create_json(const nlohmann::json& body, const RequestOptions& options) const & {
+    return detail::request(this->openai_root_, "POST", "/moderations", body, {}, options);
+}
+
+std::future<liboai::ApiResult> liboai::Moderations::create_json_async(const nlohmann::json& body, const RequestOptions& options) const & {
+    return std::async(std::launch::async, [this, body, options]() mutable { return this->create_json(body, options); });
+}

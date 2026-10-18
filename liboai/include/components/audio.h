@@ -13,6 +13,8 @@
 
 #include "../core/authorization.h"
 #include "../core/response.h"
+#include "../core/request.h"
+#include "../core/sse.h"
 
 namespace liboai {
 	class Audio final : private Network {
@@ -192,6 +194,20 @@ namespace liboai {
 				std::optional<std::string> response_format = std::nullopt,
 				std::optional<float> speed = std::nullopt
 			) const& noexcept(false);
+
+			// Modern raw APIs preserve all JSON fields. See documentation/maintenance/MODERN_COMPONENTS.md.
+			LIBOAI_EXPORT ApiResult speech_json(const nlohmann::json& body, const RequestOptions& options = {}) const &;
+			LIBOAI_EXPORT std::future<ApiResult> speech_json_async(const nlohmann::json& body, const RequestOptions& options = {}) const &;
+			LIBOAI_EXPORT ApiResult transcribe_multipart(const netimpl::components::Multipart& parts, const RequestOptions& options = {}) const &;
+			LIBOAI_EXPORT std::future<ApiResult> transcribe_multipart_async(const netimpl::components::Multipart& parts, const RequestOptions& options = {}) const &;
+			LIBOAI_EXPORT ApiResult translate_multipart(const netimpl::components::Multipart& parts, const RequestOptions& options = {}) const &;
+			LIBOAI_EXPORT std::future<ApiResult> translate_multipart_async(const netimpl::components::Multipart& parts, const RequestOptions& options = {}) const &;
+			LIBOAI_EXPORT ParsedStreamResult speech_stream(const nlohmann::json& body, SseCallback callback, const RequestOptions& options = {}) const &;
+			LIBOAI_EXPORT std::future<ParsedStreamResult> speech_stream_async(const nlohmann::json& body, SseCallback callback, const RequestOptions& options = {}) const &;
+			LIBOAI_EXPORT ApiResult speech_bytes(const nlohmann::json& body, RawStreamCallback callback, const RequestOptions& options = {}) const &;
+			LIBOAI_EXPORT std::future<ApiResult> speech_bytes_async(const nlohmann::json& body, RawStreamCallback callback, const RequestOptions& options = {}) const &;
+			LIBOAI_EXPORT ParsedStreamResult transcribe_stream(const netimpl::components::Multipart& parts, SseCallback callback, const RequestOptions& options = {}) const &;
+			LIBOAI_EXPORT std::future<ParsedStreamResult> transcribe_stream_async(const netimpl::components::Multipart& parts, SseCallback callback, const RequestOptions& options = {}) const &;
 
 		private:
 			Authorization& auth_ = Authorization::Authorizer();

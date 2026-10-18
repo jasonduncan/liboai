@@ -1,3 +1,5 @@
+> **Historical API:** This endpoint retired on January 4, 2024. These symbols and examples remain for source compatibility; they are not a supported hosted workflow. See [historical interfaces](../maintenance/HISTORICAL_APIS.md). No calls are redirected to another endpoint.
+
 <h1>Fine-Tunes</h1>
 <p>The <code>FineTunes</code> class is defined in <code>fine_tunes.h</code> at <code>liboai::FineTunes</code>, and its interface can ideally be accessed through a <code>liboai::OpenAI</code> object.
 
