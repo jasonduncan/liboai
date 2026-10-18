@@ -100,7 +100,7 @@ liboai::FutureResponse liboai::Audio::speech_async(const std::string& model, con
 }
 
 liboai::ApiResult liboai::Audio::speech_json(const nlohmann::json& body, const RequestOptions& options) const & {
-    return detail::request(this->openai_root_, "POST", "/audio/speech", body, {}, options);
+    return detail::request(this->openai_root_, "POST", "/audio/speech", std::optional<nlohmann::json>{std::in_place, body}, {}, options);
 }
 
 std::future<liboai::ApiResult> liboai::Audio::speech_json_async(const nlohmann::json& body, const RequestOptions& options) const & {

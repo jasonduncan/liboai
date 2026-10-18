@@ -1166,7 +1166,7 @@ liboai::Functions::index liboai::Functions::GetFunctionIndex(std::string_view fu
 }
 
 liboai::ApiResult liboai::ChatCompletion::create_json(const nlohmann::json& body, const RequestOptions& options) const & {
-    return detail::request(this->openai_root_, "POST", "/chat/completions", body, {}, options);
+    return detail::request(this->openai_root_, "POST", "/chat/completions", std::optional<nlohmann::json>{std::in_place, body}, {}, options);
 }
 
 std::future<liboai::ApiResult> liboai::ChatCompletion::create_json_async(const nlohmann::json& body, const RequestOptions& options) const & {
@@ -1190,7 +1190,7 @@ std::future<liboai::ApiResult> liboai::ChatCompletion::remove_async(const std::s
 }
 
 liboai::ApiResult liboai::ChatCompletion::update(const std::string& id, const nlohmann::json& body, const RequestOptions& options) const & {
-    return detail::request(this->openai_root_, "POST", "/chat/completions/" + detail::encode_path_segment(id), body, {}, options);
+    return detail::request(this->openai_root_, "POST", "/chat/completions/" + detail::encode_path_segment(id), std::optional<nlohmann::json>{std::in_place, body}, {}, options);
 }
 
 std::future<liboai::ApiResult> liboai::ChatCompletion::update_async(const std::string& id, const nlohmann::json& body, const RequestOptions& options) const & {
