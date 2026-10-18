@@ -13,6 +13,7 @@ This is a living backlog of improvements and ideas as we deepen our use of the l
 - Webhook verification through native Apple or optional OpenSSL cryptography
 - Async speech dispatch, multipart content types, and custom-root file download fixes
 - Offline HTTP workflow fixtures, compatibility examples, sanitizer and consumer-build checks
+- Qualified Linux/macOS/Windows CI and an [opt-in live regression suite](documentation/maintenance/LIVE_TESTS.md) with cleanup receipts
 
 ## Now
 
@@ -22,6 +23,8 @@ This is a living backlog of improvements and ideas as we deepen our use of the l
 
 ## Next
 
+- Propagate configured timeouts through legacy file downloads; keep opt-in live checks bounded
+- Add explicit resource-readiness helpers based on the observed live visibility delays
 - Select optional extensions only for concrete application demand
 - Keep all existing APIs stable and update current examples alongside public changes
 

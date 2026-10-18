@@ -30,3 +30,8 @@ if(LIBOAI_BUILD_TESTS)
   enable_testing()
   add_subdirectory(tests)
 endif()
+
+option(LIBOAI_BUILD_LIVE_TESTS "Build opt-in live API smoke executables (never run by CTest)" OFF)
+if(LIBOAI_BUILD_LIVE_TESTS)
+  add_subdirectory(tests/live)
+endif()

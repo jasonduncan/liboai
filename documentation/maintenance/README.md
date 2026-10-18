@@ -57,6 +57,7 @@ ctest --test-dir build --output-on-failure
 - [Cross-platform CI and local reproduction](./CI.md)
 - [Coverage and validation](./API_COVERAGE.md)
 - [Live validation results and limitations](./LIVE_VALIDATION.md)
+- [Opt-in live regression suite](./LIVE_TESTS.md)
 - [Request options and diagnostics](./REQUEST_OPTIONS.md)
 - [Modern component methods](./MODERN_COMPONENTS.md)
 - [Supporting resources](../resources/resources.md)

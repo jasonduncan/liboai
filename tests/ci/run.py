@@ -52,7 +52,7 @@ def main():
         run(['ctest', '--test-dir', directory, '-C', args.config,
              '--output-on-failure', '--no-tests=error', '--output-junit', directory / 'results.xml'])
 
-    configure(source, build / 'library', ['-DLIBOAI_BUILD_TESTS=ON',
+    configure(source, build / 'library', ['-DLIBOAI_BUILD_TESTS=ON', '-DLIBOAI_BUILD_LIVE_TESTS=ON',
               '-DBUILD_EXAMPLES=ON', '-DLIBOAI_INSTALL=ON', f'-DCMAKE_INSTALL_PREFIX={prefix}'])
     build_and_test(build / 'library')
     run(['cmake', '--install', build / 'library', '--config', args.config])
